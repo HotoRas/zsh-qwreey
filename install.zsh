@@ -7,7 +7,7 @@ function log {
 }
 
 if [[ "$FAST_NVM" == "false" ]]; then
-    FAST_NVM=true
+    FAST_NVM=false
 elif [[ "$NATIVE" == "true" ]]; then
     FAST_NVM=false
 else
