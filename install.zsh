@@ -6,6 +6,14 @@ function log {
 	printf "\e[32m[$HEAD]\e[0m %s\n" "$1"
 }
 
+if [[ "$FAST_NVM" == "false" ]]; then
+    FAST_NVM=true
+elif [[ "$NATIVE" == "true" ]]; then
+    FAST_NVM=false
+else
+    FAST_NVM=true
+fi
+
 # set zshdir
 [ -z "$ZSHDIR" ] && ZSHDIR="$HOME/.zsh"
 ZSHDIR="$(realpath "$ZSHDIR")"
@@ -27,7 +35,11 @@ fi
 # clone files
 log "Clone qwreey/zsh"                        ; git clone https://github.com/qwreey75/zsh "$ZSHDIR" --depth 1
 log "Clone romkatv/zsh-defer"                 ; git clone https://github.com/romkatv/zsh-defer "$ZSHDIR/defer" --depth 1
-log "Clone qwreey/fnvm"                       ; git clone https://github.com/qwreey75/fnvm "$ZSHDIR/fnvm" --depth 1
+if [[ "$FAST_NVM" == "true" ]]; then
+    log "Clone qwreey/fnvm"                       ; git clone https://github.com/qwreey75/fnvm "$ZSHDIR/fnvm" --depth 1
+else
+    log "Not installing qwreey/fnvm"
+fi
 log "Clone nvm-sh/nvm"                        ; git clone https://github.com/nvm-sh/nvm "$ZSHDIR/nvm" --depth 1
 log "Clone ohmyzsh/ohmyzsh"                   ; git clone https://github.com/ohmyzsh/ohmyzsh "$ZSHDIR/omz" --depth 1
 log "Clone romkatv/powerlevel10k"             ; git clone https://github.com/romkatv/powerlevel10k "$ZSHDIR/powerlevel10k" --depth 1

@@ -9,7 +9,7 @@ $DEBUG && timer_main=$(($(date +%s%N)/1000000)) && echo .zshrc load started
 # ----------------------  CONFIG  ----------------------
 export HISTFILE="$ZSHDIR/history"
 export FNVM_NVMDIR="$ZSHDIR/nvm"
-export FNVM_DIR="$ZSHDIR/fnvm"
+[ -e "$ZSHDIR/fnvm" ] && export FNVM_DIR="$ZSHDIR/fnvm"
 export NVM_DIR="$ZSHDIR/nvm"
 export PYENV_ROOT="$ZSHDIR/pyenv"
 
@@ -17,7 +17,18 @@ export PYENV_ROOT="$ZSHDIR/pyenv"
 source "$ZSHDIR/defer/zsh-defer.plugin.zsh"
 
 # nvm
-zsh-defer +1 +2 -c 'source $ZSHDIR/fnvm/fnvm.sh; fnvm_init'
+if [[ -e "$ZSHDIR/fnvm" ]]; then
+	zsh-defer +1 +2 -c 'source $ZSHDIR/fnvm/fnvm.sh; fnvm_init'
+else
+	# implement fnvm_init()
+	shell_name='$0'
+	[ -z "$shell_name" ] && shell_name="$SHELL"
+	shell_name=$(basename "$shell_name")
+
+	zsh-defer +1 +2 -c 'source $ZSHDIR/nvm/nvm.sh --no-use'
+	
+	# not implement fnvm_apply()
+fi
 
 # pyenv
 zsh-defer +1 +2 -c 'eval "$(pyenv init -)"'
